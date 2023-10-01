@@ -29,11 +29,12 @@ void swap(int *a, int *b)
  * @param l left index for merge
  * @param r right index for merge
  * @param n total number of elements in the array
+ * @param sorted_arr temporary array to merge the elements
  */
 void merge(int *a, int l, int r, int n)
 {
-    int *b = (int *)malloc(n * sizeof(int)); /* dynamic memory must be freed */
-    if (b == NULL)
+    int *sorted_arr = (int *)malloc(n * sizeof(int)); /* dynamic memory must be freed */
+    if (sorted_arr == NULL)
     {
         printf("Can't Malloc! Please try again.");
         exit(EXIT_FAILURE);
@@ -46,12 +47,12 @@ void merge(int *a, int l, int r, int n)
     {
         if (a[p1] <= a[p2])
         {
-            b[c++] = a[p1];
+            sorted_arr[c++] = a[p1];
             p1++;
         }
         else
         {
-            b[c++] = a[p2];
+            sorted_arr[c++] = a[p2];
             p2++;
         }
     }
@@ -60,7 +61,7 @@ void merge(int *a, int l, int r, int n)
     {
         while ((p1 < ((l + r) / 2) + 1))
         {
-            b[c++] = a[p1];
+            sorted_arr[c++] = a[p1];
             p1++;
         }
     }
@@ -68,34 +69,34 @@ void merge(int *a, int l, int r, int n)
     {
         while ((p2 < r + 1))
         {
-            b[c++] = a[p2];
+            sorted_arr[c++] = a[p2];
             p2++;
         }
     }
 
-    for (c = l; c < r + 1; c++) a[c] = b[c];
+    for (c = l; c < r + 1; c++) a[c] = sorted_arr[c];
 
-    free(b);
+    free(sorted_arr);
 }
 
 /** Merge sort algorithm implementation
  * @param a array to sort
  * @param n number of elements in the array
- * @param l index to sort from
- * @param r index to sort till
+ * @param begin index to sort from
+ * @param end index to sort till
  */
-void merge_sort(int *a, int n, int l, int r)
+void merge_sort(int *arr, int n, int begin, int end)
 {
-    if (r - l == 1)
+    if (end - begin == 1)
     {
-        if (a[l] > a[r])
-            swap(&a[l], &a[r]);
+        if (arr[begin] > arr[end])
+            swap(&arr[begin], &arr[end]);
     }
     else if (l != r)
     {
-        merge_sort(a, n, l, (l + r) / 2);
-        merge_sort(a, n, ((l + r) / 2) + 1, r);
-        merge(a, l, r, n);
+        merge_sort(arr, n, begin, (begin + end) / 2);
+        merge_sort(arr, n, ((begin + end) / 2) + 1, end);
+        merge(arr, begin, end, n);
     }
 
     /* no change if l == r */
@@ -105,7 +106,7 @@ void merge_sort(int *a, int n, int l, int r)
 /** Main function */
 int main(void)
 {
-    int *a, n, i;
+    int *arr, n, i;
     printf("Enter Array size: ");
     scanf("%d", &n);
     if (n <= 0) /* exit program if arraysize is not greater than 0 */
@@ -113,8 +114,8 @@ int main(void)
         printf("Array size must be Greater than 0!\n");
         return 1;
     }
-    a = (int *)malloc(n * sizeof(int));
-    if (a == NULL) /* exit program if can't malloc memory */
+    arr = (int *)malloc(n * sizeof(int));
+    if (arr == NULL) /* exit program if can't malloc memory */
     {
         printf("Can't Malloc! Please try again.");
         return 1;
@@ -122,18 +123,18 @@ int main(void)
     for (i = 0; i < n; i++)
     {
         printf("Enter number[%d]: ", i);
-        scanf("%d", &a[i]);
+        scanf("%d", &array[i]);
     }
 
-    merge_sort(a, n, 0, n - 1);
+    merge_sort(arr, n, 0, n - 1);
     printf("Sorted Array: ");
     for (i = 0; i < n; i++)
     {
-        printf("%d ", a[i]);
+        printf("%d ", arr[i]);
     }
     printf("\n");
 
-    free(a);
+    free(arr);
 
     return 0;
 }
